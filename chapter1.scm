@@ -74,6 +74,6 @@ evaluation or normal-order evaluation. He defines the following two procedures: 
 evaluation? What behavior will he observe with an interpreter that uses
 normal-order evaluation? Explain your answer. |#
 
-#| Solition: Applicative order of evaluation will result in infinite recursion for 
+#| Solution: Applicative order of evaluation will result in infinite recursion for 
 (test 0 (p)), whereas in normal order evaluation,
 (test 0 (p)) will return 0 without evaluating (p) |#
