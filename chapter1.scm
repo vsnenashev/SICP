@@ -4,6 +4,7 @@
 1.1 The Elements of Programming
 |#
 
+
 #| Exercise 1.3: Define a procedure that takes three numbers as arguments
 and returns the sum of the squares of the two larger numbers. |#
 
@@ -50,6 +51,7 @@ and returns the sum of the squares of the two larger numbers. |#
   (sum-sq (max a b)
           (max (min a b) c)))
 
+
 #| Exercise 1.4: Observe that our model of evaluation allows
 for combinations whose operators are compound expressions.
 Use this observation to describe the behavior of the following procedure: |#
@@ -58,6 +60,7 @@ Use this observation to describe the behavior of the following procedure: |#
 
 #| Solution: The procedure `(a-plus-abs-b a b)` returns the result
 of the operation `a + abs(b)`, depending on the sign of `b`.|#
+
 
 #| Exercise 1.5: Ben Bitdiddle has invented a test to determine
 whether the interpreter he is faced with is using applicative-order
