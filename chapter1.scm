@@ -102,8 +102,48 @@ be done, and she defines a new version of if:|#
           (sqrt-iter (improve guess x)
                      x)))
 
-;What happens when Alyssa aempts to use this to compute square roots? Explain.
+;What happens when Alyssa atempts to use this to compute square roots? Explain.
 
 #| Solution: Eva's new-if always evaluates both possible answers
 (then-clause and else-clause) regardless of the condition, leading to
 aunnecessary computations and errors in recursive use.|#
+
+
+#|Exercise 1.7: The good-enough? test used in computing square roots will
+not be very effective for finding the square roots of very small numbers.
+Also, in real computers, arithmetic operations are almost always
+performed with limited precision. This makes our test inadequate for very large
+numbers. Explain these statements, with examples showing how the test fails
+for small and large numbers. An alternative strategy for implementing
+good-enough? is to watch how guess changes from one iteration to the next and to
+stop when the change is a very small fraction of the guess. Design
+a square-root procedure that uses this kind of end test.
+Does this work better for small and large numbers?|#
+
+; Solution
+(if (good-enough? guess
+                    (improve guess x))
+      guess
+      (sqrt-iter (improve guess x)
+                 x)))
+
+(define (improve guess x)
+  (average guess (/ x guess)))
+
+(define (good-enough? guess x)
+  (< (abs (- guess x)) 0.00001))
+
+(define (average x y)
+  (/ (+ x y) 2))
+
+(define (square-root x)
+  (sqrt-iter 1.0 x))
+
+#|Exercise 1.8: Newton’s method for cube roots is based on the fact that if y
+is an approximation to the cube root of x, then a better approximation
+is given by the value (x / (y^2) + 2y) / 3.
+Use this formula to implement a cube-root procedure analogous
+to the square-root procedure. (In Section 1.3.4 we will see how to implement
+Newton’s method in general as an abstraction of these square-root
+and cube-root procedures.) |#
+
