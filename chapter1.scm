@@ -189,7 +189,7 @@ in evaluating (+ 4 5). Are these processes iterative or recursive? |#
 
 ; Solution:
 
-#| 1. Recursive process:
+;1. Recursive process:
 
 (+ 4 5)
 (inc (+ 3 5))
@@ -202,10 +202,10 @@ in evaluating (+ 4 5). Are these processes iterative or recursive? |#
 (inc 8)
 9
 
-This process is recursive because it computes through
-recursive calls until it reaches the base case (when `a` becomes 0).
+;This process is recursive because it computes through
+;recursive calls until it reaches the base case (when `a` becomes 0).
 
-2. Iterative process:
+;2. Iterative process:
 
 (+ 4 5)
 (+ 3 6)
@@ -214,8 +214,128 @@ recursive calls until it reaches the base case (when `a` becomes 0).
 (+ 0 9)
 9
 
-This process is iterative because it computes in a loop, using
+#|This process is iterative because it computes in a loop, using
 intermediate values (`a` decreases from 4 to 0, while `b` increases from 5 to 9).
 
 Thus, the first procedure uses recursion to compute the sum,
 while the second procedure uses iteration. |#
+
+
+#|Exercise 1.10: The following procedure computes a mathematical function
+called Ackermann’s function.|#
+(define (A x y)
+  (cond ((= y 0) 0)
+        ((= x 0) (* 2 y))
+        ((= y 1) 2)
+        (else (A (- x 1) (A x (- y 1))))))
+
+;What are the values of the following expressions?
+(A 1 10)
+(A 2 4)
+(A 3 3)
+
+;Consider the following procedures, where A is the procedure defined above:
+
+(define (f n) (A 0 n))
+(define (g n) (A 1 n))
+(define (h n) (A 2 n))
+(define (k n) (* 5 n n))
+
+#| Give concise mathematical definitions for the functions computed by
+the procedures f, g, and h for positive integer values of n.
+For example, (k n) computes 5n^2.|#
+
+; Solution:
+;Computing (A 1 10):
+(A 1 10)
+(A 0 (A 1 9))
+(A 0 (A 0 (A 1 8)))
+…
+(A 0 (A 0 (A 0 (A 0 (A 0 (A 0 (A 0 (A 0 (A 0 (A 1 1))))))))))
+(A 0 (A 0 (A 0 (A 0 (A 0 (A 0 (A 0 (A 0 (A 0 2)))))))))
+(A 0 (A 0 (A 0 (A 0 (A 0 (A 0 (A 0 (A 0 (* 2 2)))))))))
+(A 0 (A 0 (A 0 (A 0 (A 0 (A 0 (A 0 (A 0 4))))))))
+(A 0 (A 0 (A 0 (A 0 (A 0 (A 0 (A 0 8)))))))
+…
+1024
+
+;Computing (A 2 4):
+(A 2 4)
+(A 1 (A 2 3))
+(A 1 (A 1 (A 2 2)))
+(A 1 (A 1 (A 1 (A 2 1))))
+(A 1 (A 1 (A 1 2)))
+(A 1 (A 1 (A 0 (A 1 1))))
+(A 1 (A 1 (* 2 (A 1 1))))
+(A 1 (A 1 (* 2 2)))
+(A 1 (A 1 4))
+…
+(A 1 16)
+…
+2 ^ 16 = 65536
+
+;Computing (A 3 3):
+(A 3 3)
+(A 2 (A 3 2))
+(A 2 (A 2 (A 3 1)))
+(A 2 (A 2 2))
+(A 2 (A 1 (A 2 1)))
+(A 2 (A 1 2))
+(A 2 4)
+…
+65536
+
+;Consider the following procedure:
+(define (f n) (A 0 n))
+
+;Based on the definition of procedure A, substitute x = 0, y = n:
+(define (A 0 n)
+  (cond ((= n 0) 0)
+        ((= 0 0) (* 2 n))
+        ((= n 1) 2)
+        (else (A (- 0 1) (A 0 (- n 1))))))
+
+;This procedure simplifies to:
+(define (A 0 n)
+  (* 2 n))
+
+;Thus, the procedure f can be written as: f(n) = 2n
+
+;Consider the procedure g:
+(define (g n) (A 1 n))
+
+;We will proceed similarly. Substitute values:
+(define (A 1 n)
+  (cond ((= n 0) 0)
+        ((= 1 0) (* 2 y))
+        ((= n 1) 2)
+        (else (A (- 1 1) (A 1 (- n 1))))))
+
+;Simplify:
+(define (A 1 n)
+  (cond ((= n 0) 0)
+        ((= n 1) 2)
+        (else (A 0 (A 1 (- n 1))))))
+
+;Considering the formula for f(n):
+(define (A 1 n)
+  (cond ((= n 0) 0)
+        ((= n 1) 2)
+        (else (* 2 (A 1 (- n 1))))))
+
+;The procedure can be written recursively: g(n) = 2 * g(n - 1) (except when n = 0).
+;Thus, the procedure g can be written as: g(n) = 0, if n = 0; g(n) = 2^n
+
+;Consider the procedure h:
+(define (h n) (A 2 n))
+
+;Substitute and simplify:
+(define (A 2 n)
+  (cond ((= n 0) 0)
+        ((= n 1) 2)
+        (else (A 1 (A 2 (- n 1))))))
+
+#|Considering the formula for g(n), the function can be written recursively
+(again, except when n = 0): h(n) = 2^(h(n-1)). Thus, the procedure h can be
+written as: h(n) = 0, if n = 0; h(n) = 2^(2^(2^…2^2)…), that is, 2 raised to
+the power of 2, raised to the power of 2, and so on (n - 1) times.|#
