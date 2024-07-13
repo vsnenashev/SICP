@@ -176,7 +176,7 @@ Write a procedure that computes f by means of a recursive
 process. Write a procedure that computes f by means of an iterative process. |#
 
 ; Solution:
-;recursive process
+;recursive process ver. 1
 (define (f n)
   (cond ((= n 0) 0)
         ((= n 1) 1)
@@ -184,6 +184,14 @@ process. Write a procedure that computes f by means of an iterative process. |#
         (else (+ (f (- n 1))
                  (* 2 (f (- n 2)))
                  (* 3 (f (- n 3)))))))
+
+;ver. 2
+(define (f n)
+  (if (< n 3)
+      n
+      (+ (f (- n 1))
+                 (* 2 (f (- n 2)))
+                 (* 3 (f (- n 3))))))
 
 ;iterative process
 (define (f-iter n)
