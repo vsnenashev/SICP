@@ -4,7 +4,7 @@ This repository contains my solutions to problems from the book "Structure and I
 
 ## Repository Structure
 
-- Each `chapter-N-N` directory corresponds to a subchapter X.X of the book and contains files with problem solutions.
+- Each `chapter-N-N` directory corresponds to a subchapter N.N of the book and contains files with problem solutions.
 - Problems within each directory are organized into separate files or grouped by topic.
 - Solutions are implemented in Scheme, the language used extensively in the book for examples and exercises.
 
