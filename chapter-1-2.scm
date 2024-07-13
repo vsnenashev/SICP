@@ -169,3 +169,30 @@ For example, (k n) computes 5n^2.|#
 written as: h(n) = 0, if n = 0; h(n) = 2^(2^(2^…2^2)…), that is, 2 raised to
 the power of 2, raised to the power of 2, and so on (n - 1) times.|#
 
+
+#| Exercise 1.11: A function f is defined by the rule that 
+f(n) = n, if n < 3, and f(n) = f(n - 1) + 2f(n - 2) + 3f(n - 3), if n ≥ 3.
+Write a procedure that computes f by means of a recursive
+process. Write a procedure that computes f by means of an iterative process. |#
+
+; Solution:
+;recursive process
+(define (f n)
+  (cond ((= n 0) 0)
+        ((= n 1) 1)
+        ((= n 2) 2)
+        (else (+ (f (- n 1))
+                 (* 2 (f (- n 2)))
+                 (* 3 (f (- n 3)))))))
+
+;iterative process
+(define (f-iter n)
+  (f-i 2 1 0 n))
+
+(define (f-i a b c count)
+  (if (= count 0)
+      c
+      (f-i (+ (* 3 c) (* 2 b) a)
+           a
+           b
+           (- count 1))))
