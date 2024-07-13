@@ -204,3 +204,24 @@ process. Write a procedure that computes f by means of an iterative process. |#
            a
            b
            (- count 1))))
+
+
+#| Exercise 1.12: The following pattern of numbers is called Pascal’s triangle.
+1
+1 1
+1 2 1
+1 3 3 1
+1 4 6 4 1
+. . .
+The numbers at the edge of the triangle are all 1, and each number inside
+the triangle is the sum of the two numbers above it. Write a procedure that
+computes elements of Pascal’s triangle by means of a recursive process. |#
+
+; Solution:
+(define (solution row n)
+  (cond ((= row 1) 1)
+        ((= n 1) 1)
+        ((= n row) 1)
+        (else (+ (solution (- row 1) (- n 1))
+                 (solution (- row 1) n)))))
+
