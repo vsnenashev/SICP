@@ -225,3 +225,53 @@ computes elements of Pascal’s triangle by means of a recursive process. |#
         (else (+ (solution (- row 1) (- n 1))
                  (solution (- row 1) n)))))
 
+
+#|Exercise 1.13: Prove that Fib(n) is the closest integer to φ^n / √5,
+where φ = (1 + √5) / 2. Hint: Let ψ = (1 − √5) / 2. Use induction
+and the definition of the Fibonacci numbers (see Section 1.2.2) to prove
+that Fib(n) = (φ^n − ψ^n) / √5.|#
+
+#|Solution:
+1. Base Case
+For n = 0:  
+Fib(0) = 0  
+(φ^0 - ψ^0) / √5 = (1 - 1) / √5 = 0  
+
+For n = 1:  
+Fib(1) = 1  
+(φ^1 - ψ^1) / √5 = (φ - ψ) / √5 =
+= ((1 + √5)/2 - (1 - √5)/2) / √5 = √5 / √5 = 1  
+
+2. Induction Hypothesis
+Assume the formula holds for n = k and n = k+1:  
+Fib(k) = (φ^k - ψ^k) / √5  
+Fib(k+1) = (φ^(k+1) - ψ^(k+1)) / √5  
+
+3. Induction Step
+Show that the formula holds for n = k+2:  
+Fib(k+2) = Fib(k+1) + Fib(k)  
+Fib(k+2) = (φ^(k+1) - ψ^(k+1)) / √5 + (φ^k - ψ^k) / √5  
+Fib(k+2) = (φ^(k+1) + φ^k - (ψ^(k+1) + ψ^k)) / √5  
+
+Proving the properties of φ and ψ:
+φ = (1 + √5) / 2
+φ^2 = ((1 + √5) / 2)^2 = (1 + 2√5 + 5) / 4 =
+= (6 + 2√5) / 4 = (3 + √5) / 2
+φ + 1 = (1 + √5) / 2 + 1 = (3 + √5) / 2
+Thus, φ^2 = φ + 1.  
+
+Similarly for ψ:
+Thus, ψ^2 = ψ + 1.  
+
+Using these properties:  
+φ^(k+2) = φ^(k+1) * φ = (φ + 1) * φ^k = φ^(k+1) + φ^k  
+ψ^(k+2) = ψ^(k+1) * ψ = (ψ + 1) * ψ^k = ψ^(k+1) + ψ^k  
+
+Thus,  
+Fib(k+2) = (φ^(k+2) - ψ^(k+2)) / √5  
+
+4. Conclusion
+By induction, the formula Fib(n) = (φ^n - ψ^n) / √5 holds for all n.
+Since |ψ| < 1, ψ^n approaches zero as n increases,
+therefore Fib(n) approximates φ^n / √5, proving that Fib(n)
+is the nearest integer to φ^n / √5.|#
