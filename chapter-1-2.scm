@@ -476,6 +476,17 @@ that uses a logarithmic number of steps.|#
 #|Exercise 1.18: Using the results of Exercise 1.16 and Exercise 1.17,
 devise a procedure that generates an iterative process for multiplying 
 two integers in terms of adding, doubling, and halving and uses a
-logarithmic number of steps.
+logarithmic number of steps.|#
 
 ;; Solution:
+(define (double x) (+ x x))
+
+(define (halve x) (/ x 2))
+
+(define (mul-iter a b)
+  (iter 0 a b))
+
+(define (iter res a b)
+  (cond ((= b 0) res)
+        ((even? b) (iter res (double a) (halve b)))
+        (else (iter (+ res a) a (- b 1)))))
