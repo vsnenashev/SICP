@@ -472,6 +472,13 @@ that uses a logarithmic number of steps.|#
 
 (define (halve x) (/ x 2))
 
+;; halve 2nd version (if division is not available):
+(define (halve x)
+  (define (halve-i y z)
+    (if (= y (double z))
+        z
+        (halve-i y (- z 1))))
+  (halve-i x x))
 
 #|Exercise 1.18: Using the results of Exercise 1.16 and Exercise 1.17,
 devise a procedure that generates an iterative process for multiplying 
