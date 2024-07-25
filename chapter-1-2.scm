@@ -750,3 +750,141 @@ the smallest divisor of each of the following numbers: 199, 1999, 19999.|#
 ;; > 7
 ;; this number is not prime
 ;; 19999 = 7*2857
+
+
+#|Exercise 1.22: Most Lisp implementations include a primitive
+called runtime that returns an integer that specifies
+the amount of time the system has been running (measured,
+for example, in microseconds). The following timed-prime-test
+procedure, when called with an integern, prints n and checks
+to see if n is prime. If n is prime, the procedure prints
+three asterisks followed by the amount of time used in performing
+the test.|#
+
+(define (timed-prime-test n)
+  (newline)
+  (display n)
+  (start-prime-test n (runtime)))
+
+(define (start-prime-test n start-time)
+  (if (prime? n)
+      (report-prime (- (runtime) start-time))))
+
+(define (report-prime elapsed-time)
+  (display " *** ")
+  (display elapsed-time))
+
+#| Using this procedure, write a procedure search-for-primes
+that checks the primality of consecutive odd integers in a
+specified range. Use your procedure to find the three smallest
+primes larger than 1000; larger than 10,000; larger than
+100,000; larger than 1,000,000. Note the time needed to test
+each prime. Since the testing algorithm has order of growth 
+of Θ(√n), you should expect that testing for primes around
+10,000 should take about √10 times as long as testing for
+primes around 1000. Do your timing data bear this out?
+How well do the data for 100,000 and 1,000,000 support
+the Θ(√n) prediction? Is your result compatible with the notion
+that programs on your machine run in time proportional to
+the number of steps required for the computation?|#
+
+#lang racket/base
+(define (runtime) (current-inexact-milliseconds))
+
+(define (square x) (* x x))
+
+(define (smallest-divisor n)
+  (find-divisor n 2))
+
+(define (find-divisor n test-divisor)
+  (cond ((> (square test-divisor) n)
+         n)
+        ((divides? test-divisor n)
+         test-divisor)
+        (else (find-divisor
+               n
+               (+ test-divisor 1)))))
+
+(define (divides? a b)
+  (= (remainder b a) 0))
+
+(define (prime? n)
+  (= n (smallest-divisor n)))
+
+(define (timed-prime-test n)
+  (newline)
+  (display n)
+  (start-prime-test n (runtime)))
+
+(define (start-prime-test n start-time)
+  (when (prime? n)
+      (report-prime (- (runtime) start-time))))
+
+(define (report-prime elapsed-time)
+  (display " *** ")
+  (display elapsed-time))
+
+(define (search-for-primes start end)
+  (if (even? start)
+      (search-for-primes (+ 1 start) end)
+      (when (< start end)
+             (timed-prime-test start)
+                  (search-for-primes (+ 2 start) end))))
+
+(search-for-primes 1000 1090)
+
+(search-for-primes 10000 10090)
+
+(search-for-primes 100000 100090)
+
+(search-for-primes 1000000 1000090)
+
+; Calculation results (I used the first five prime numbers):
+; 
+; 1009 *** 0.00048828125
+; 1013 *** 0.00048828125
+; 1019 *** 0.00048828125
+; 1021 *** 0.000244140625
+; 1031 *** 0.00048828125
+; 
+; 10007 *** 0.0009765625
+; 10009 *** 0.001220703125
+; 10037 *** 0.0009765625
+; 10039 *** 0.0009765625
+; 10061 *** 0.00048828125
+; 
+; 100003 *** 0.00244140625
+; 100019 *** 0.002685546875
+; 100043 *** 0.002685546875
+; 100049 *** 0.002685546875
+; 100057 *** 0.0029296875
+; 
+; 1000003 *** 0.0078125
+; 1000033 *** 0.00830078125
+; 1000037 *** 0.008544921875
+; 1000039 *** 0.00830078125
+; 1000081 *** 0.00830078125
+; 
+; Execution Time Analysis:
+; 
+; 1. For numbers around 1000:
+;    - Average checking time: 0.000429 seconds
+; 
+; 2. For numbers around 10,000:
+;    - Average checking time: 0.001030 seconds
+;    - Time ratio compared to numbers around 1000: 2.40
+; 
+; 3. For numbers around 100,000:
+;    - Average checking time: 0.002685 seconds
+;    - Time ratio compared to numbers around 10,000: 2.61
+; 
+; 4. For numbers around 1,000,000:
+;    - Average checking time: 0.008292 seconds
+;    - Time ratio compared to numbers around 100,000: 3.09
+; 
+; Conclusion:
+; 
+; The execution time for checking the primality of numbers increases
+; with the number size, but not strictly proportional to √10 ≈ 3.16.
+; The time increases, and this growth is confirmed, especially for
+; larger numbers.
