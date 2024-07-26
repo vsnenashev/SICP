@@ -888,3 +888,142 @@ the number of steps required for the computation?|#
 ; with the number size, but not strictly proportional to √10 ≈ 3.16.
 ; The time increases, and this growth is confirmed, especially for
 ; larger numbers.
+
+
+#|Exercise 1.23: The smallest-divisor procedure shown at
+the start of this section does lots of needless testing: After it
+checks to see if the number is divisible by 2 there is no point
+in checking to see if it is divisible by any larger even numbers.
+This suggests that the values used for test-divisor
+should not be 2, 3, 4, 5, 6, …, but rather 2, 3, 5, 7, 9, …
+To implement this change, define a procedure next that returns 3
+if its input is equal to 2 and otherwise returns its input plus 2.
+Modify the smallest-divisor procedure to use (next test-divisor)
+instead of (+ test-divisor 1).
+With timed-prime-test incorporating this modified version of
+smallest-divisor, run the test for each of the 12 primes found
+in Exercise 1.22. Since this modification halves the number of
+test steps, you should expect it to run about twice as fast.
+Is this expectation confirmed? If not, what is the observed
+ratio of the speeds of the two algorithms, and how do you 
+explain the fact that it is different from 2?|#
+    
+; Solution:
+#lang racket/base
+
+(define (runtime) (current-inexact-milliseconds))
+
+(define (square x) (* x x))
+
+(define (smallest-divisor n)
+  (find-divisor n 2))
+
+(define (find-divisor n test-divisor)
+  (cond ((> (square test-divisor) n)
+         n)
+        ((divides? test-divisor n)
+         test-divisor)
+        (else (find-divisor
+               n
+               (next test-divisor)))))
+
+(define (divides? a b)
+  (= (remainder b a) 0))
+
+(define (prime? n)
+  (= n (smallest-divisor n)))
+
+(define (timed-prime-test n)
+  (newline)
+  (display n)
+  (start-prime-test n (runtime)))
+
+(define (start-prime-test n start-time)
+  (when (prime? n)
+      (report-prime (- (runtime) start-time))))
+
+(define (report-prime elapsed-time)
+  (display " *** ")
+  (display elapsed-time))
+
+(define (search-for-primes start end)
+  (if (even? start)
+      (search-for-primes (+ 1 start) end)
+      (when (< start end)
+             (timed-prime-test start)
+                  (search-for-primes (+ 2 start) end))))
+
+(define (next i)
+  (if (= i 2)
+      3
+      (+ i 2)))
+
+; Calculation results (the first five prime numbers were taken):
+
+; 1009 *** 0.000244140625
+; 1013 *** 0.000244140625
+; 1019 *** 0.000244140625
+; 1021 *** 0.000244140625
+; 1031 *** 0.000244140625
+
+; 10007 *** 0.000732421875
+; 10009 *** 0.000732421875
+; 10037 *** 0.000732421875
+; 10039 *** 0.00048828125
+; 10061 *** 0.000732421875
+
+; 100003 *** 0.001708984375
+; 100019 *** 0.000732421875
+; 100043 *** 0.0009765625
+; 100049 *** 0.001708984375
+; 100057 *** 0.00146484375
+
+; 1000003 *** 0.005126953125
+; 1000033 *** 0.00439453125
+; 1000037 *** 0.002685546875
+; 1000039 *** 0.0048828125
+; 1000081 *** 0.0048828125
+
+; Execution Time Analysis:
+
+; 1. For numbers around 1000:
+;    - Average checking time: 0.000244 seconds
+;    - In the previous task: 0.000429 seconds
+;    - Time ratio: 1.76
+
+; 2. For numbers around 10,000:
+;    - Average checking time: 0.000683 seconds
+;    - In the previous task: 0.001030 seconds
+;    - Time ratio: 1.51
+
+; 3. For numbers around 100,000:
+;    - Average checking time: 0.001458 seconds
+;    - In the previous task: 0.002685 seconds
+;    - Time ratio: 1.84
+
+; 4. For numbers around 1,000,000:
+;    - Average checking time: 0.004598 seconds
+;    - In the previous task: 0.008292 seconds
+;    - Time ratio: 1.80
+
+; Conclusion:
+
+; The optimization resulted in a significant reduction in
+; the execution time of the prime-checking algorithm:
+
+; 1. For numbers around 1000, time decreased by a factor of 1.76.
+; 2. For numbers around 10,000, time decreased by a factor of 1.51.
+; 3. For numbers around 100,000, time decreased by a factor of 1.84.
+; 4. For numbers around 1,000,000, time decreased by a factor of 1.80.
+
+; These results show that the modification led to a reduction in the number 
+; of checking steps. Although a twofold speedup was expected, the actual 
+; speedup ranges from 1.51 to 1.84 times. 
+
+; The algorithmic reason why the improved algorithm, which halved the number 
+; of steps, did not speed up the computations by 2 times is because we also 
+; added some new computations for each step:
+
+; - another function call (next function)
+; - if
+; - predicate (= n 2)
