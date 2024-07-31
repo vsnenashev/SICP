@@ -1216,3 +1216,47 @@ fast prime tester? Explain.|#
 ;    of numbers for large exponents can significantly exceed
 ;    available memory and resources, and operations on such
 ;    numbers can be very slow.
+
+    
+#|Exercise 1.26: Louis Reasoner is having great difficulty doing
+Exercise 1.24. His fast-prime? test seems to run more
+slowly than his prime? test. Louis calls his friend Eva Lu
+Ator over to help. When they examine Louis’s code, they
+find that he has rewritten the expmod procedure to use an
+explicit multiplication, rather than calling square:|#
+
+(define (expmod base exp m)
+  (cond ((= exp 0) 1)
+        ((even? exp)
+         (remainder (* (expmod base (/ exp 2) m)
+                       (expmod base (/ exp 2) m))
+                    m))
+        (else
+             (remainder (* base
+                           (expmod base (- exp 1) m))
+                        m))))
+
+#|“I don’t see what difference that could make,” says Louis.
+“I do.” says Eva. “By writing the procedure like that, you
+have transformed the Θ(logn) process into a Θ(n) process.”
+Explain.|#
+    
+; Solution
+
+; Louis’s version of expmod doesn’t use
+; a square function, but instead uses multiplication (*).
+; This might not seem significant, but we have to keep
+; in mind that the interpreter uses applicative-order evaluation,
+; meaning it will evaluate the arguments and then apply the function.
+
+; In the case of (square (expmod base (/ exp 2) m)),
+; the parameter of square will be evaluated only once,
+; then square will be applied.
+
+; In the case of
+; (* (expmod base (/ exp 2) m)
+;    (expmod base (/ exp 2) m)),
+; each of the (expmod base (/ exp 2) m) will be fully evaluated
+; before the * is applied. Since both are recursive calls,
+; it will double the work to do whenever this branch is executed.
+; The complexity becomes Θ(log(2^n)) = Θ(n*log2) = Θ(n).
