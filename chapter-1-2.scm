@@ -1260,3 +1260,53 @@ Explain.|#
 ; before the * is applied. Since both are recursive calls,
 ; it will double the work to do whenever this branch is executed.
 ; The complexity becomes Θ(log(2^n)) = Θ(n*log2) = Θ(n).
+
+
+#|Exercise 1.27: Demonstrate that the Carmichael numbers
+listed in Footnote 1.47 really do fool the Fermat test. That is,
+write a procedure that takes an integer n and tests whether a^n
+is congruent to a modulo n for every a < n, and try your
+procedure on the given Carmichael numbers.|#
+
+; Solution:
+(define (square x) (* x x))
+
+(define (expmod base exp m)
+  (cond ((= exp 0) 1)
+        ((even? exp)
+         (remainder
+          (square (expmod base (/ exp 2) m))
+          m))
+        (else
+         (remainder (* base (expmod base (- exp 1) m))
+                    m))))
+
+(define (carmichael-test n)
+  (define (try-it n a)
+    (cond ((= a 1) #t)
+          ((not (= (expmod a n n) a)) #f)
+          (else (try-it n (- a 1)))))
+  (try-it n (- n 1)))
+
+(display (carmichael-test 561))
+(newline)
+(display (carmichael-test 1105))
+(newline)
+(display (carmichael-test 1729))
+(newline)
+(display (carmichael-test 2465)) 
+(newline)
+(display (carmichael-test 2821))
+(newline)
+(display (carmichael-test 6601))
+(newline)
+
+; Evaluates to:
+
+; #t
+; #t
+; #t
+; #t
+; #t
+; #t
+
