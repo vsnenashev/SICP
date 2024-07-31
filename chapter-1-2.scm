@@ -1165,3 +1165,54 @@ this out? Can you explain any discrepancy you find?|#
 ; method requires only a constant increase in time.
 ; Thus, while the prime? method is faster for small numbers,
 ; the fast-prime? method becomes significantly faster for larger numbers.
+
+
+#|Exercise 1.25: Alyssa P. Hacker complains that we went to a lot
+of extra work in writing expmod. After all, she says, since we
+already know how to compute exponentials, we could have simply written
+
+(define (expmod base exp m)
+(remainder (fast-expt base exp) m))
+
+Is she correct? Would this procedure serve as well for our
+fast prime tester? Explain.|#
+
+; Solution:
+;
+; Analysis:
+;
+; 1. Estimation of the size of intermediate results:
+; 
+;   In the function `fast-expt`, the number of digits
+;   in the result is calculated as:
+;   Number of digits = floor(log10(base^exp)) + 1 =
+;   = floor(exp * log10(base)) + 1
+;   
+;   Examples:
+;   - for (fast-expt 2 1000), the number of digits is approximately:
+;     floor(1000 * log10(2)) + 1 ≈ floor(1000 * 0.301) + 1 = 302
+;   - For (fast-expt 10 1000), the number of digits is:
+;     floor(1000 * log10(10)) + 1 = floor(1000) + 1 = 1001
+;
+; 2. Computational complexity:
+; 
+;   - Operations with large numbers (bignum) are significantly
+;     slower than with fixed-size numbers (fixnum). In practice:
+;     - Multiplication and division of large numbers can have
+;       a complexity of O(N log N log log N), where N is
+;       the number of digits in the number.
+;     - Operations with fixnum have a complexity of O(1).
+;
+; Conclusions:
+;
+; 1. The `expmod` function in its current form is more efficient,
+;    as it manages the size of intermediate results and keeps
+;    them within manageable limits, ensuring faster execution
+;    and lower memory requirements.
+; 
+; 2. Alyssa P. Hacker's suggestion could lead to problems due
+;    to handling very large numbers, which can slow down
+;    execution and require more memory. The average size
+;    of numbers for large exponents can significantly exceed
+;    available memory and resources, and operations on such
+;    numbers can be very slow.
